@@ -21,40 +21,40 @@ class MultipleSectionModelViewController: UIViewController {
         super.viewDidLoad()
         
         let sections: [MultipleSectionModel] = [
-            .ImageProvidableSection(title: "Section 1",
-                items: [.ImageSectionItem(image: UIImage(named: "settings")!, title: "General")]),
-            .ToggleableSection(title: "Section 2",
-                items: [.ToggleableSectionItem(title: "On", enabled: true)]),
-            .StepperableSection(title: "Section 3",
-                items: [.StepperSectionItem(title: "1")])
+            .imageProvidableSection(title: "Section 1",
+                items: [.imageSectionItem(image: UIImage(named: "settings")!, title: "General")]),
+            .toggleableSection(title: "Section 2",
+                items: [.toggleableSectionItem(title: "On", enabled: true)]),
+            .stepperableSection(title: "Section 3",
+                items: [.stepperSectionItem(title: "1")])
         ]
         
         let dataSource = RxTableViewSectionedReloadDataSource<MultipleSectionModel>()
 
-        skinTableViewDataSource(dataSource)
+        skinTableView(dataSource)
         
         Observable.just(sections)
             .bindTo(tableView.rx_itemsWithDataSource(dataSource))
             .addDisposableTo(disposeBag)
     }
     
-    func skinTableViewDataSource(dataSource: RxTableViewSectionedReloadDataSource<MultipleSectionModel>) {
+    func skinTableView(_ dataSource: RxTableViewSectionedReloadDataSource<MultipleSectionModel>) {
         dataSource.configureCell = { (dataSource, table, idxPath, _) in
             switch dataSource.itemAtIndexPath(idxPath) {
-            case let .ImageSectionItem(image, title):
+            case let .imageSectionItem(image, title):
                 let cell: ImageTitleTableViewCell = table.dequeueReusableCell(forIndexPath: idxPath)
                 cell.titleLabel.text = title
                 cell.cellImageView.image = image
                 
                 return cell
-            case let .StepperSectionItem(title):
+            case let .stepperSectionItem(title):
                 let cell: TitleSteperTableViewCell = table.dequeueReusableCell(forIndexPath: idxPath)
                 cell.titleLabel.text = title
                 
                 return cell
-            case let .ToggleableSectionItem(title, enabled):
+            case let .toggleableSectionItem(title, enabled):
                 let cell: TitleSwitchTableViewCell = table.dequeueReusableCell(forIndexPath: idxPath)
-                cell.switchControl.on = enabled
+                cell.switchControl.isOn = enabled
                 cell.titleLabel.text = title
                 
                 return cell
@@ -70,15 +70,15 @@ class MultipleSectionModelViewController: UIViewController {
 }
 
 enum MultipleSectionModel {
-    case ImageProvidableSection(title: String, items: [SectionItem])
-    case ToggleableSection(title: String, items: [SectionItem])
-    case StepperableSection(title: String, items: [SectionItem])
+    case imageProvidableSection(title: String, items: [SectionItem])
+    case toggleableSection(title: String, items: [SectionItem])
+    case stepperableSection(title: String, items: [SectionItem])
 }
 
 enum SectionItem {
-    case ImageSectionItem(image: UIImage, title: String)
-    case ToggleableSectionItem(title: String, enabled: Bool)
-    case StepperSectionItem(title: String)
+    case imageSectionItem(image: UIImage, title: String)
+    case toggleableSectionItem(title: String, enabled: Bool)
+    case stepperSectionItem(title: String)
 }
 
 extension MultipleSectionModel: SectionModelType {
@@ -86,23 +86,23 @@ extension MultipleSectionModel: SectionModelType {
     
     var items: [SectionItem] {
         switch  self {
-        case .ImageProvidableSection(title: _, items: let items):
+        case .imageProvidableSection(title: _, items: let items):
             return items.map {$0}
-        case .StepperableSection(title: _, items: let items):
+        case .stepperableSection(title: _, items: let items):
             return items.map {$0}
-        case .ToggleableSection(title: _, items: let items):
+        case .toggleableSection(title: _, items: let items):
             return items.map {$0}
         }
     }
     
     init(original: MultipleSectionModel, items: [Item]) {
         switch original {
-        case let .ImageProvidableSection(title: title, items: _):
-            self = .ImageProvidableSection(title: title, items: items)
-        case let .StepperableSection(title, _):
-            self = .StepperableSection(title: title, items: items)
-        case let .ToggleableSection(title, _):
-            self = .ToggleableSection(title: title, items: items)
+        case let .imageProvidableSection(title: title, items: _):
+            self = .imageProvidableSection(title: title, items: items)
+        case let .stepperableSection(title, _):
+            self = .stepperableSection(title: title, items: items)
+        case let .toggleableSection(title, _):
+            self = .toggleableSection(title: title, items: items)
         }
     }
 }
@@ -110,11 +110,11 @@ extension MultipleSectionModel: SectionModelType {
 extension MultipleSectionModel {
     var title: String {
         switch self {
-        case .ImageProvidableSection(title: let title, items: _):
+        case .imageProvidableSection(title: let title, items: _):
             return title
-        case .StepperableSection(title: let title, items: _):
+        case .stepperableSection(title: let title, items: _):
             return title
-        case .ToggleableSection(title: let title, items: _):
+        case .toggleableSection(title: let title, items: _):
             return title
         }
     }

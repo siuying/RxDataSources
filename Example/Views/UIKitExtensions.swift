@@ -6,6 +6,7 @@
 //  Copyright © 2016 kzaher. All rights reserved.
 //
 
+import Foundation
 import class UIKit.UITableViewCell
 import class UIKit.UITableView
 import class Foundation.NSIndexPath
@@ -25,8 +26,8 @@ extension UITableViewCell: ReusableView {
 
 extension UITableView {
     
-    func dequeueReusableCell<T: UITableViewCell where T: ReusableView>(forIndexPath indexPath: NSIndexPath) -> T {
-        guard let cell = dequeueReusableCellWithIdentifier(T.reuseIdentifier, forIndexPath: indexPath) as? T else {
+    func dequeueReusableCell<T: UITableViewCell where T: ReusableView>(forIndexPath indexPath: IndexPath) -> T {
+        guard let cell = self.dequeueReusableCell(withIdentifier: T.reuseIdentifier, for: indexPath) as? T else {
             fatalError("Could not dequeue cell with identifier: \(T.reuseIdentifier)")
         }
         
